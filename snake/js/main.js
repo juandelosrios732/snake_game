@@ -1,4 +1,6 @@
 const playBoard = document.querySelector(".play-board");
+const scoreElement = document.querySelector(".score");
+const highScoreElement = document.querySelector(".high-score");
 
 let gameOver = false;
 let foodX, foodY;
@@ -6,6 +8,11 @@ let snakeX = 5, snakeY = 10;
 let snakeBody = [];
 let velocityX = 0, velocityY = 0;
 let setIntervalId;
+let score = 0;
+let highScore = localStorage.getItem("high-score") || 0;
+
+ // Mostrar la puntuación máxima permanentemente sobre el tablero.
+ highScoreElement.innerHTML = `Puntuación máxima: ${highScore}`;
 
 // Función que genera la alatoriedad en el tablero de la comida que comerá la serpiente
 
@@ -49,11 +56,20 @@ const initGame = () => {
     let htmlMarkup = `<div class="food" style="grid-area: ${foodY} / ${foodX}"></div>`;
 
     // Comer Fruta: al momento que la serpiente pasa sobre la comida, una nueva comida aparecerá aleatoriamente en el tablero, además hace crecer el array snakeBody con el método push:
+    // Agregar el contador de puntaje y que vaya sumando cuando la serpiente coma una fruta. Además guardar la puntuación máxima en el localstorage
     if (snakeX === foodX && snakeY === foodY) {
         changeFoodPosition();
         snakeBody.push([foodX, foodY]);
-        console.log(snakeBody);
+        score++;
+
+        highScore = score >= highScore ? score : highScore;
+        localStorage.setItem("high-score", highScore);
+
+        scoreElement.innerHTML = `Puntuación: ${score}`;
+
     }
+
+   
 
     // Arreglando el crecimiento de la serpiente: al momento de pasar la serpiente sobre la comida va a correr el cuadrado hacia atras, creando y haciendo crecer el cuerpo de la serpiente.
     for(let i = snakeBody.length -1; i > 0; i--) {
